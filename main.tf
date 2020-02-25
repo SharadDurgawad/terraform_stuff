@@ -1,7 +1,7 @@
 resource "kubernetes_service" "mysql_service" {
   metadata {
     name = "wordpress-mysql"
-	labels {
+	labels = {
 	  app = var.app_label
 	}
   }
@@ -22,7 +22,7 @@ resource "kubernetes_service" "mysql_service" {
 resource "kubernetes_deployment" "mysql_deployment" {
   metadata {
     name = "wordpress-mysql"
-	labels {
+	labels = {
 	  app = var.app_label
 	}
   }
@@ -69,13 +69,13 @@ resource "kubernetes_service" "wordpress_service" {
   metadata {
     name   = "wordpress"
     labels = {
-      app = "${var.app_label}"
+      app = var.app_label
     }
   }
   spec {
     selector {
-      app  = "${var.app_label}"
-      tier = "${var.wordpress_tier}"
+      app  = var.app_label
+      tier = var.wordpress_tier
     }
 
     port {
@@ -98,23 +98,23 @@ resource "kubernetes_deployment" "wordpress_deployment" {
 
     selector {
       match_labels {
-        app  = "${var.app_label}"
-        tier = "${var.wordpress_tier}"
+        app  = var.app_label
+        tier = var.wordpress_tier
       }
     }
 
     template {
       metadata {
         labels {
-          app  = "${var.app_label}"
-          tier = "${var.wordpress_tier}"
+          app  = var.app_label
+          tier = var.wordpress_tier
         }
       }
 
       spec {
         container {
           name  = "wordpress"
-          image = "wordpress:${var.wordpress_version}-apache"
+          image = "wordpress:var.wordpress_version-apache"
 
           env {
             name = "WORDPRESS_DB_HOST"
@@ -123,7 +123,7 @@ resource "kubernetes_deployment" "wordpress_deployment" {
 
           env {
             name  = "WORDPRESS_DB_PASSWORD"
-            value = "${var.mysql_password}"
+            value = var.mysql_password
           }
 
           port {
